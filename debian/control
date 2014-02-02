@@ -1,0 +1,28 @@
+Source: sinz
+Section: devel
+Priority: extra
+Maintainer: Árpád Magosányi <mag@balabit.hu>
+Build-Depends: debhelper (>= 8.0.0), python, dh-autoreconf, python-support  (>= 0.90)
+Standards-Version: 3.9.4
+Homepage: https://github.com/magwas/sinz
+
+Package: sinz
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, python-support (>= 0.90)
+Description: Glue Scripts for Continous Integration and builds
+ Sinz Is Not ZWA
+ Sinz is a set of scripts for continuous integration
+ of multiple interdependent packages.
+ .
+ We follow the "Do Not Reinvent The Wheel" approach:
+ .
+ Workflows known by Sinz:
+ 1. Cloud workflow
+    Packages are in github, build and deployment with travis,
+    github.io, launchpad and public osb. Sins provides build and
+    deployment scripts for the various cloud services.
+ .
+ 2. Private workflow
+    Packages are in private repositories, and build uses private
+    jenkins and OBS instances.
+
