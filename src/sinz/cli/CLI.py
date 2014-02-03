@@ -1,32 +1,59 @@
-import sys
-from sinz.Singleton import Singleton
+import types
 from sinz.cli.Registry import Registry
-from sinz.Plugin import Plugin
+from sinz.cli.PluginManager import PluginManager
+import traceback
 
-class CLI(Plugin):
-    @Registry.climethod
-    def help(self):
-        ret = []
-        for (name,func) in Registry.getInstance().commands.items():
-            ret.append("%s : %s"%(name,func))
-        return "\n".join(ret)
+class CLI(object):
+    def __init__(self):
+        PluginManager.getPlugins()
+        Registry.getInstance().addAliases([
+            (["help"],["help","help"])
+            ])
+    
+    @classmethod
+    def climethod(cls,fn):
+        fn.cliMethod = True
+        return fn
+    
+    @classmethod
+    def mixin(cls,klass):
+        registry=Registry.getInstance()
+        try:
+            currInstance = klass()
+            initError = None
+        except Exception as e:
+            print(e)
+            currInstance = e.instance
+            initError = e
+        for name in dir(currInstance):
+            fn = getattr(currInstance,name)
+            if isinstance(fn, types.MethodType) and getattr(fn,"cliMethod",False):
+                registry.registerFunction(klass, initError, fn)
+        return klass
     
     def run(self,func):
-        ret = func(self)
+        ret = func()
         if None is not ret:
             print(ret)
         return ret
     
-    @classmethod
-    def mixin(cls,klass):
-        cls.__bases__=(klass,) + (cls.__bases__)
-        return klass
-        
     def main(self,argv):
+        registry = Registry.getInstance()
         if(2 > len(argv)):
-            self.run(self.help)
-            sys.exit(1)
-        return self.run(Registry.getInstance().commands[argv[1]])
-        
-if __name__ == '__main__':
-    CLI.main(sys.argv)
+            self.run(registry.getCommand(["help"]))
+            raise SystemExit(1)
+        try:
+            return self.run(registry.getCommand(argv[1:]))
+        except Exception as e:
+            traceback.print_exc()
+            print("exception:",e)
+            self.main([argv[0],"help"])
+            raise SystemExit(1)
+
+    def firstUseable(self,cmds):
+        registry = Registry.getInstance()
+        for path in cmds:
+            cmd = registry.getCommand(path)
+            return cmd()
+    
+

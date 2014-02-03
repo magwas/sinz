@@ -11,5 +11,5 @@ setup(
   description="Sinz Is Not ZWA",
   author="Árpád Magosányi",
   author_email="mag@balabit.hu",
-  packages=["sinz","sinz.cli", "sinz.debian"]
+  packages=["sinz","sinz.cli", "sinz.plugins"]
   )

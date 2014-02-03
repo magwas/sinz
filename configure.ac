@@ -1,4 +1,4 @@
-AC_INIT([sinz], 1.0)
+AC_INIT([sinz], 0.1)
 AM_INIT_AUTOMAKE
 AC_PATH_PROG(PYTHON, python, none)
 if test "x$PYTHON" = "xnone"; then

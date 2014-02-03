@@ -2,7 +2,7 @@ Source: sinz
 Section: devel
 Priority: extra
 Maintainer: Árpád Magosányi <mag@balabit.hu>
-Build-Depends: debhelper (>= 8.0.0), python, dh-autoreconf, python-support  (>= 0.90)
+Build-Depends: debhelper (>= 8.0.0), python, dh-autoreconf, python-support  (>= 0.90), python-git
 Standards-Version: 3.9.4
 Homepage: https://github.com/magwas/sinz
 
