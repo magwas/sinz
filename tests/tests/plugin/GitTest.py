@@ -18,7 +18,7 @@ class GitTest(unittest.TestCase):
         self.assertEquals(branch,branchfromgit)
         
     def test_git_getNewTestCases_lists_new_testcases(self):
-        with TestProject("cp tests/tests/plugin/GitTest.py tests/tests/plugin/Othertest.py; git add tests/tests/plugin/Othertest.py") as project:
+        with TestProject("cp tests/tests/plugin/GitTest.py tests/tests/plugin/Othertest.py; git add tests/tests/plugin/Othertest.py"):
             cases = CLI().main(["test","git","getNewTestCases"])
             thecases = """git getBranch gives the actual branch name
 git getCommit gives the current commit id

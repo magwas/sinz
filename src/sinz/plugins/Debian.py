@@ -1,6 +1,7 @@
 from sinz.cli.CLI import CLI
 from sinz.PluginInitException import PluginInitException
 from sinz.Util import Util
+import os
 
 class NonDebianPackageError(PluginInitException):
     def __str__(self):
@@ -14,13 +15,20 @@ class Debian(object):
             self.parseChangeLog()
         except IOError:
             raise NonDebianPackageError(self)
+        if os.environ.has_key("DEBEMAIL"):
+            self.changelogEmail = os.environ["DEBEMAIL"]
         
     def parseChangeLog(self):
         changelog = open("debian/changelog")
         changelogline = changelog.readline()
         self.package, fullversion, rest = changelogline.split(" ", 2)  # @UnusedVariable
-        self.fullVersion = fullversion.replace("(","").replace(")","") 
-
+        self.fullVersion = fullversion.replace("(","").replace(")","")
+        self.changelogEmail = self.getDebEmailFromChangelog()
+        
+    def getDebEmailFromChangelog(self):
+        cmd = """cat debian/changelog |grep "^ -- "|head -1 |sed 's/^ -- //;s/  .*//'"""
+        return Util.cmdOutput(cmd)
+    
     @CLI.climethod
     def getPackage(self):
         return self.package
@@ -34,12 +42,24 @@ class Debian(object):
         return self.fullVersion.split("-")[0]
     
     @CLI.climethod
+    def getDebEmail(self):
+        return self.changelogEmail
+    
+    @CLI.climethod
     def addChangelogEntry(self):
-        cmdline = 'DEBEMAIL="%s" dch -v %s -b -D %s --force-distribution "automated build for %s %s"'%(
-                self.debemail,
-                self.version,
-                self.distroname,
-                self.commitid
+        cli = CLI()
+        version = cli.main(["addChangelogEntry", "getVersion"])
+        branch = cli.main(["addChangelogEntry", "getBranch"])
+        commitid = cli.main(["addChangelogEntry", "getCommitIdentifier"])
+        buildid = cli.main(["addChangelogEntry", "getBuildId"])
+        fullversion="%s-%s%s"%(version,buildid,branch)
+        cmdline = 'DEBEMAIL="%s" dch -v %s -b -D %s --force-distribution "automated build for commit %s"'%(
+                self.getDebEmail(),
+                fullversion,
+                branch,
+                commitid,
                 )
-        Util.runCmd(cmdline)
+        print(cmdline)
+        #Util.runCmd(cmdline)
+        return cmdline
     

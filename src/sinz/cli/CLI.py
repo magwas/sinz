@@ -7,9 +7,10 @@ class CLI(object):
     def __init__(self):
         PluginManager().getPlugins()
         Registry.getInstance().addAliases([
-            (["help"],["help","help"])
+            (["help"],["help","help"]),
+            (["getBranch"],["git", "getBranch"]),
+            (["getCommitIdentifier"],["git", "getCommitIdentifier"]),
             ])
-    
     @classmethod
     def climethod(cls,fn):
         fn.cliMethod = True
@@ -22,7 +23,9 @@ class CLI(object):
             currInstance = klass()
             initError = None
         except Exception as e:
-            print(e)
+            if not getattr(e,"instance",False):
+                traceback.print_exc()
+                raise(e)
             currInstance = e.instance
             initError = e
         for name in dir(currInstance):
@@ -43,9 +46,8 @@ class CLI(object):
         return self.run(registry.getCommand(argv[1:]))
 
     def main(self,argv):
-        registry = Registry.getInstance()
         if(2 > len(argv)):
-            self.run(registry.getCommand(["help"]))
+            self.runCmd([argv[0],"help"])
             raise SystemExit(1)
         try:
             return self.runCmd(argv)
@@ -58,6 +60,8 @@ class CLI(object):
         registry = Registry.getInstance()
         for path in cmds:
             cmd = registry.getCommand(path)
+            if isinstance(cmd,Exception):
+                continue
             return cmd()
-    
-
+        print("no useable module found for %s"%(cmds,))
+        raise SystemExit(1)

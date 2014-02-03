@@ -17,6 +17,10 @@ class GitModule(object):
         return self.repo.active_branch.commit.hexsha
     
     @CLI.climethod
+    def getCommitIdentifier(self):
+        return "branch %s commit %s"%(self.getBranch(),self.getCommit())
+
+    @CLI.climethod
     def getNewTestCases(self):
         cmd = "git diff HEAD |grep '^+ *def test_' |sed 's/^.*test_//;s/_/ /g;s/(.*//'"
         return Util.cmdOutput(cmd)

@@ -18,13 +18,12 @@ class Autoconf(object):
         gd = acinitline.groupdict()
         self.version = self.unQuote(gd["version"])
         self.package = self.unQuote(gd["package"])
-        return acinitline
 
     def __init__(self):
         try:
             self.getAutoConfig()
-        except Exception as e:
-            raise NonAutoconfPackageError(e)
+        except Exception:
+            raise NonAutoconfPackageError(self)
     
     @CLI.climethod
     def getPackage(self):
