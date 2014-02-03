@@ -3,10 +3,18 @@ import imp
 import os
 
 class PluginManager(object):
-    @staticmethod
-    def importModule(name,path):
+    forceReload = False
+    @classmethod
+    def setForceReload(cls,doForce):
+        cls.forceReload = doForce
+    def getModuleNamed(self, name):
+        if self.forceReload:
+            raise KeyError
+        return sys.modules[name]
+
+    def importModule(self,name,path):
         try:
-            return sys.modules[name]
+            return self.getModuleNamed(name)
         except KeyError:
             pass
         fp, pathname, description = imp.find_module(name, path)
@@ -16,8 +24,7 @@ class PluginManager(object):
             if fp:
                 fp.close()
                 
-    @classmethod
-    def getPlugins(cls):
+    def getPlugins(self):
         sinzdir = os.path.dirname(os.path.dirname(__file__))
         PluginFolder=os.path.join(sinzdir,"plugins")
         possibleplugins = os.listdir(PluginFolder)
@@ -25,5 +32,5 @@ class PluginManager(object):
             if not i.endswith(".py") or i == "__init__.py":
                 continue
             name = i[:-3]
-            cls.importModule(name, [PluginFolder])
+            self.importModule(name, [PluginFolder])
         

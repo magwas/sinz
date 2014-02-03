@@ -2,8 +2,9 @@
 import unittest
 import os
 import sinz.cli
-import subprocess
 from sinz.plugins.Debian import Debian
+from tests.TestProject import TestProject
+import re
 
 class DebianTest(unittest.TestCase):
     
@@ -23,14 +24,22 @@ class DebianTest(unittest.TestCase):
         self.assertEquals(a, 0)
         
     def test_Other_functions_do_work_in_a_non_debianized_package(self):
-        os.chdir("src")
-        a=subprocess.call("./sinz.py help",shell=True)
-        self.assertEquals(a, 0)
+        with TestProject("rm -rf debian") as project:
+            helpstring = project.cli.main(["called from test","help","help"])
+            self.assertTrue(re.search("^help :", helpstring, re.MULTILINE))
+            self.assertTrue(re.search("^deb :", helpstring, re.MULTILINE))
         
     def test_The_deb_command_do_not_work_in_a_non_debianized_package(self):
-        os.chdir("src")
-        a=subprocess.call("./sinz.py Debian.getPackage",shell=True)
-        self.assertEquals(a, 1)
+        with TestProject("rm -rf debian") as project:
+            self.assertExceptionName("NonDebianPackageError",project.cli.runCmd,(["called from test","deb","getPackage"],))
+
+    def assertExceptionName(self,name,runnable,args):
+            try:
+                runnable(*args)
+                self.fai()
+            except Exception as e:
+                self.assertEquals(name, e.__class__.__name__)
+
         
 if __name__ == "__main__":
     unittest.main()

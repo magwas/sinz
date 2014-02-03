@@ -41,5 +41,5 @@ class Debian(object):
                 self.distroname,
                 self.commitid
                 )
-        Util.runcmd(cmdline)
+        Util.runCmd(cmdline)
     

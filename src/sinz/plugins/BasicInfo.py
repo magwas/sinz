@@ -9,4 +9,3 @@ class BasicInfo(object):
                 ["deb", "getUpstreamVersion"],
                 ["autoconf", "getVersion"]
             ])
-        

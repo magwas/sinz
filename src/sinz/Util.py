@@ -15,8 +15,8 @@ class Util(object):
 
     
     @classmethod
-    def runcmd(cls, cmdline):
-        p = subprocess.call(cmdline)
+    def runCmd(cls, cmdline):
+        p = subprocess.call(cmdline, shell=True)
         if (0 != p):
             raise CmdRunException(cmdline)
     

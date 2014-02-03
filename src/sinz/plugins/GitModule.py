@@ -1,5 +1,6 @@
 from sinz.cli.CLI import CLI
 import git
+from sinz.Util import Util
 
 @CLI.mixin
 class GitModule(object):
@@ -14,4 +15,9 @@ class GitModule(object):
     @CLI.climethod
     def getCommit(self):
         return self.repo.active_branch.commit.hexsha
+    
+    @CLI.climethod
+    def getNewTestCases(self):
+        cmd = "git diff HEAD |grep '^+ *def test_' |sed 's/^.*test_//;s/_/ /g;s/(.*//'"
+        return Util.cmdOutput(cmd)
         

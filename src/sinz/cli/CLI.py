@@ -5,7 +5,7 @@ import traceback
 
 class CLI(object):
     def __init__(self):
-        PluginManager.getPlugins()
+        PluginManager().getPlugins()
         Registry.getInstance().addAliases([
             (["help"],["help","help"])
             ])
@@ -17,7 +17,7 @@ class CLI(object):
     
     @classmethod
     def mixin(cls,klass):
-        registry=Registry.getInstance()
+        registry = Registry.getInstance()
         try:
             currInstance = klass()
             initError = None
@@ -37,17 +37,21 @@ class CLI(object):
             print(ret)
         return ret
     
+
+    def runCmd(self, argv):
+        registry = Registry.getInstance()
+        return self.run(registry.getCommand(argv[1:]))
+
     def main(self,argv):
         registry = Registry.getInstance()
         if(2 > len(argv)):
             self.run(registry.getCommand(["help"]))
             raise SystemExit(1)
         try:
-            return self.run(registry.getCommand(argv[1:]))
-        except Exception as e:
+            return self.runCmd(argv)
+        except Exception:
             traceback.print_exc()
-            print("exception:",e)
-            self.main([argv[0],"help"])
+            self.runCmd([argv[0],"help"])
             raise SystemExit(1)
 
     def firstUseable(self,cmds):

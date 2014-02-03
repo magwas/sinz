@@ -1,6 +1,7 @@
 import unittest
 from sinz.cli.CLI import CLI
 from sinz.Util import Util
+from tests.TestProject import TestProject
 
 class GitTest(unittest.TestCase):
 
@@ -15,6 +16,15 @@ class GitTest(unittest.TestCase):
         cmd = "git log |head -1|awk '{print $2}'"
         branchfromgit = Util.cmdOutput(cmd)
         self.assertEquals(branch,branchfromgit)
+        
+    def test_git_getNewTestCases_lists_new_testcases(self):
+        with TestProject("cp tests/tests/plugin/GitTest.py tests/tests/plugin/Othertest.py; git add tests/tests/plugin/Othertest.py") as project:
+            cases = CLI().main(["test","git","getNewTestCases"])
+            thecases = """git getBranch gives the actual branch name
+git getCommit gives the current commit id
+git getNewTestCases lists new testcases"""
+            self.assertEquals(thecases,cases.strip())
+
 
 if __name__ == "__main__":
     unittest.main()
