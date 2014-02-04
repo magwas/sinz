@@ -24,7 +24,6 @@ class Registry(object):
             group[cmdname] = RegistryRecord(initError)
         else:
             group[cmdname] = RegistryRecord(fn)
-            
 
     def getEntry(self, argv, create=False):
         curr = self.commands
@@ -37,10 +36,3 @@ class Registry(object):
     def getCommand(self,argv):
         curr = self.getEntry(argv)
         return curr.fn
-
-
-    def addAliases(self,aliaslist):
-        for (k,v) in aliaslist:
-            self.getEntry(k,create=True).fn = self.getEntry(v).fn
-
-                

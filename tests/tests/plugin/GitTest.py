@@ -10,6 +10,11 @@ class GitTest(unittest.TestCase):
         cmd = "git branch|grep '^\*'|sed 's/..//'"
         branchfromgit = Util.cmdOutput(cmd)
         self.assertEquals(branch,branchfromgit)
+
+    def test_git_getBranch_gives_the_last_tag_of_branch_name(self):
+        with TestProject("git checkout -b 'foo/bar'"):
+            branch=CLI().main(["test","git","getBranch"])
+            self.assertEquals(branch,"bar")
         
     def test_git_getCommit_gives_the_current_commit_id(self):
         branch=CLI().main(["test","git","getCommit"])
@@ -21,6 +26,7 @@ class GitTest(unittest.TestCase):
         with TestProject("cp tests/tests/plugin/GitTest.py tests/tests/plugin/Othertest.py; git add tests/tests/plugin/Othertest.py"):
             cases = CLI().main(["test","git","getNewTestCases"])
             thecases = """git getBranch gives the actual branch name
+git getBranch gives the last tag of branch name
 git getCommit gives the current commit id
 git getNewTestCases lists new testcases"""
             self.assertEquals(thecases,cases.strip())

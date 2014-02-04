@@ -7,7 +7,7 @@ from sinz.cli.CLI import CLI
 import sys
 from StringIO import StringIO
 
-class Test(unittest.TestCase):
+class CLITest(unittest.TestCase):
 
     def setUp(self):
         packetroot = os.path.commonprefix([sinz.PluginInitException.__file__, __file__])

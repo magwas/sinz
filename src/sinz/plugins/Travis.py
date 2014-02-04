@@ -8,15 +8,16 @@ class NotInTravisBuild(PluginInitException):
 
 @CLI.mixin
 class Travis(object):
+    cliName = ["travis"]
     def __init__(self):
-        if not os.environ.get("TRAVIS",False):
+        if not "yes" == os.environ.get("TRAVIS",False):
             raise NotInTravisBuild(self)
         self.branch = os.environ.get("TRAVIS_BRANCH")
         self.buildNumber = os.environ.get("TRAVIS_BUILD_NUMBER")
         self.commit = os.environ.get("TRAVIS_COMMIT")
     @CLI.climethod
     def getBranch(self):
-        return self.branch
+        return self.branch.split("/")[-1]
     @CLI.climethod
     def getCommit(self):
         return self.commit

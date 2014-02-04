@@ -48,17 +48,25 @@ class DebianTest(ReloadedTestCase):
             self.assertEqual(helpstring, "Árpád Magosányi <mag@balabit.hu>")
             
     def test_deb_addChangelogEntry_adds_a_changelog_entry(self):
-        os.environ["TRAVIS"]="true"
+        os.environ["TRAVIS"]="yes"
         os.environ["TRAVIS_BUILD_NUMBER"]="42"
+        os.environ["TRAVIS_BRANCH"]="travis-Branch"
+        os.environ["TRAVIS_COMMIT"]="ebadadeadbeef"
+        os.environ["DEBEMAIL"]="Test Builder <builder@example.com>"
+        if os.environ.get("DEBFULLNAME", False):
+            del os.environ["DEBFULLNAME"]
         with TestProject() as project:
+            self.assertEqual("42", project.cli.main(["called from test","travis","getBuildId"]) )
             cmdline = project.cli.main(["called from test","deb","addChangelogEntry"])
-            self.assertEquals("",cmdline)
             clf = open("debian/changelog")
             changelog = clf.read()
             clf.close()
-            self.assertEquals(changelog, "")
+            changeloghead = changelog.split(">")[0]
+            self.assertEquals(changeloghead, 'sinz (0.1-42travis-Branch) travis-Branch; urgency=low\n\n  * automated build for commit branch travis-Branch commit ebadadeadbeef\n\n -- Test Builder <builder@example.com')
         del os.environ["TRAVIS"]
         del os.environ["TRAVIS_BUILD_NUMBER"]
+        del os.environ["TRAVIS_BRANCH"]
+        del os.environ["TRAVIS_COMMIT"]
 
 if __name__ == "__main__":
     unittest.main()

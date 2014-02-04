@@ -28,6 +28,29 @@ class BasicInfoTest(ReloadedTestCase):
     def test_getVersion_fails_if_no_autoconf_nor_debian(self):
         with TestProject("rm -rf configure.ac debian") as project:
             self.assertRaises(SystemExit,project.cli.main,(["called from test","getVersion"],))
+            
+    def test_getBranch_uses_travis_envvar(self):
+        os.environ["TRAVIS_BRANCH"]="/foo/bar/travis"
+        os.environ["TRAVIS"]="yes"
+        with TestProject() as project:
+            helpstring = project.cli.main(["called from test","getBranch"])
+            self.assertEqual(helpstring, "travis")
+        del os.environ["TRAVIS_BRANCH"]
+        del os.environ["TRAVIS"]
+
+    def test_getBranch_uses_git_if_no_travis(self):
+        with TestProject("git checkout -b gitbranch") as project:
+            helpstring = project.cli.main(["called from test","getBranch"])
+            self.assertEqual(helpstring, "gitbranch")
+
+    def test_getBuildId_uses_travis_envvar(self):
+        os.environ["TRAVIS_BUILD_NUMBER"]="40"
+        os.environ["TRAVIS"]="yes"
+        with TestProject() as project:
+            helpstring = project.cli.main(["called from test","getBuildId"])
+            self.assertEqual(helpstring, "40")
+        del os.environ["TRAVIS_BUILD_NUMBER"]
+        del os.environ["TRAVIS"]
 
 if __name__ == "__main__":
     unittest.main()

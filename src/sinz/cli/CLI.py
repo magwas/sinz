@@ -6,11 +6,6 @@ import traceback
 class CLI(object):
     def __init__(self):
         PluginManager().getPlugins()
-        Registry.getInstance().addAliases([
-            (["help"],["help","help"]),
-            (["getBranch"],["git", "getBranch"]),
-            (["getCommitIdentifier"],["git", "getCommitIdentifier"]),
-            ])
     @classmethod
     def climethod(cls,fn):
         fn.cliMethod = True

@@ -59,7 +59,6 @@ class Debian(object):
                 branch,
                 commitid,
                 )
-        print(cmdline)
-        #Util.runCmd(cmdline)
+        Util.runCmd(cmdline)
         return cmdline
     

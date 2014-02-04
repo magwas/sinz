@@ -7,7 +7,6 @@ class Util(object):
     def cmdOutput(cmd):
         proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         proc.wait()
-        print proc.returncode
         if (0 != proc.returncode):
             raise CmdRunException((cmd,proc.stderr.read()))
         output = proc.stdout.read().strip()
