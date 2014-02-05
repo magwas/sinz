@@ -4,9 +4,18 @@ import os
 
 class PluginManager(object):
     forceReload = False
+    __instance = None
+
+    def __new__(cls):
+        if PluginManager.__instance is None or PluginManager.forceReload is True:
+            PluginManager.__instance = object.__new__(cls)
+            PluginManager.__instance.__init()
+        return PluginManager.__instance
+        
     @classmethod
     def setForceReload(cls,doForce):
         cls.forceReload = doForce
+
     def getModuleNamed(self, name):
         if self.forceReload:
             raise KeyError
@@ -14,7 +23,8 @@ class PluginManager(object):
 
     def importModule(self,name,path):
         try:
-            return self.getModuleNamed(name)
+            module = self.getModuleNamed(name)
+            return module
         except KeyError:
             pass
         fp, pathname, description = imp.find_module(name, path)
@@ -23,8 +33,8 @@ class PluginManager(object):
         finally:
             if fp:
                 fp.close()
-                
-    def getPlugins(self):
+    
+    def __init(self):
         sinzdir = os.path.dirname(os.path.dirname(__file__))
         PluginFolder=os.path.join(sinzdir,"plugins")
         possibleplugins = os.listdir(PluginFolder)

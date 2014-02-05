@@ -34,6 +34,11 @@ class Debian(object):
         return self.package
     
     @CLI.climethod
+    def sourceBuild(self):
+        cmd = "echo y |debuild -us -uc -S"
+        return Util.runCmd(cmd)
+    
+    @CLI.climethod
     def getFullVersion(self):
         return self.fullVersion
 
@@ -48,10 +53,10 @@ class Debian(object):
     @CLI.climethod
     def addChangelogEntry(self):
         cli = CLI()
-        version = cli.main(["addChangelogEntry", "getVersion"])
-        branch = cli.main(["addChangelogEntry", "getBranch"])
-        commitid = cli.main(["addChangelogEntry", "getCommitIdentifier"])
-        buildid = cli.main(["addChangelogEntry", "getBuildId"])
+        version = cli.call(["addChangelogEntry", "getVersion"])
+        branch = cli.call(["addChangelogEntry", "getBranch"])
+        commitid = cli.call(["addChangelogEntry", "getCommitIdentifier"])
+        buildid = cli.call(["addChangelogEntry", "getBuildId"])
         fullversion="%s-%s%s"%(version,buildid,branch)
         cmdline = 'DEBEMAIL="%s" dch -v %s -b -D %s --force-distribution "automated build for commit %s"'%(
                 self.getDebEmail(),
@@ -60,5 +65,6 @@ class Debian(object):
                 commitid,
                 )
         Util.runCmd(cmdline)
+        self.parseChangeLog()
         return cmdline
     

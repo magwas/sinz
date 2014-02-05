@@ -2,10 +2,16 @@ import types
 from sinz.cli.Registry import Registry
 from sinz.cli.PluginManager import PluginManager
 import traceback
+import os
+from sinz.Util import Util
 
 class CLI(object):
     def __init__(self):
-        PluginManager().getPlugins()
+        self.printcmd = os.environ.get("SINZ_DEBUG")
+        PluginManager()
+        if self.printcmd:
+            Util.setVerbose()
+
     @classmethod
     def climethod(cls,fn):
         fn.cliMethod = True
@@ -13,7 +19,7 @@ class CLI(object):
     
     @classmethod
     def mixin(cls,klass):
-        registry = Registry.getInstance()
+        registry = Registry()
         try:
             currInstance = klass()
             initError = None
@@ -29,18 +35,13 @@ class CLI(object):
                 registry.registerFunction(klass, initError, fn)
         return klass
     
-    def run(self,func):
-        ret = func()
-        if None is not ret:
-            print(ret)
-        return ret
-    
-
     def runCmd(self, argv):
-        registry = Registry.getInstance()
-        return self.run(registry.getCommand(argv[1:]))
+        registry = Registry()
+        if self.printcmd:
+            print(argv)
+        return registry.runCommand(argv[1:])
 
-    def main(self,argv):
+    def call(self,argv):
         if(2 > len(argv)):
             self.runCmd([argv[0],"help"])
             raise SystemExit(1)
@@ -51,12 +52,25 @@ class CLI(object):
             self.runCmd([argv[0],"help"])
             raise SystemExit(1)
 
+    def main(self,argv):
+        if(2 > len(argv)):
+            print(self.runCmd([argv[0],"help"]))
+            raise SystemExit(1)
+        try:
+            print(self.runCmd(argv))
+        except Exception:
+            traceback.print_exc()
+            print(self.runCmd([argv[0],"help"]))
+            raise SystemExit(1)
+
     def firstUseable(self,cmds):
-        registry = Registry.getInstance()
+        registry = Registry()
         for path in cmds:
-            cmd = registry.getCommand(path)
+            (cmd,args) = registry.getCommand(path)
             if isinstance(cmd,Exception):
                 continue
-            return cmd()
+            if self.printcmd:
+                print(cmd, args)
+            return cmd(*args)
         print("no useable module found for %s"%(cmds,))
         raise SystemExit(1)

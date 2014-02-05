@@ -7,6 +7,6 @@ class Help(object):
     @CLI.climethod
     def help(self):
         ret = []
-        for (name,func) in Registry.getInstance().commands.items():
+        for (name,func) in Registry().commands.items():
             ret.append("%s : %s"%(name,func))
         return "\n".join(ret)

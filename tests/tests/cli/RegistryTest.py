@@ -3,11 +3,11 @@ import unittest
 from sinz.cli.Registry import Registry
 from tests.TestProject import TestProject
 
-class Test(unittest.TestCase):
+class RegistryTest(unittest.TestCase):
 
     def testRegistry(self):
         with TestProject():
-            registry = Registry.getInstance()
+            registry = Registry()
             self.assertTrue(registry.commands.has_key("deb"))
             self.assertTrue(registry.commands["deb"].has_key("getPackage"))
 

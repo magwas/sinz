@@ -17,6 +17,8 @@ class TestProject(object):
         PluginManager.setForceReload(True)
         Registry.INSTANCE = None
         self.cli = CLI()
+        PluginManager.setForceReload(False)
+
 
     def __enter__(self):
         self.oldcwd = os.getcwd()
@@ -29,8 +31,8 @@ class TestProject(object):
     def __exit__(self, tipe, value, traceback):
         os.chdir(self.oldcwd)
         self.reloadPlugins()
-        PluginManager.setForceReload(False)
         if self.keep:
-            print("keeping %s"%(self.projectpath,))
+            print("keeping %s"%(self.basepath,))
         else:
-            Util.runCmd("rm -rf %s"%(self.projectpath,))
+            cmd = "rm -rf %s" % (self.basepath, )
+            Util.runCmd(cmd)

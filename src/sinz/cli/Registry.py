@@ -3,19 +3,17 @@ class RegistryRecord(dict):
         if None is fn:
             fn=self.listMyself
         self.fn = fn
-    def listMyself(self):
+    def listMyself(self,*args):
         return "\n".join(self.keys())
         
 class Registry(object):
-    INSTANCE = None
-    def __init__(self):
-        self.commands = RegistryRecord()
-    @classmethod
-    def getInstance(cls):
-        if cls.INSTANCE is None:
-            cls.INSTANCE = cls()
-        return cls.INSTANCE
-    
+    __instance = None
+    def __new__(cls):
+        if Registry.__instance is None:
+            Registry.__instance = object.__new__(cls)
+            Registry.__instance.commands = RegistryRecord()
+        return Registry.__instance
+
     def registerFunction(self, klass, initError, fn):
         cmdpath = getattr(klass,"cliName",[klass.__name__])
         group = self.getEntry(cmdpath, True)
@@ -33,6 +31,15 @@ class Registry(object):
             curr = curr[i]
         return curr
 
+    def runCommand(self,argv):
+        (cmd,args) = self.getCommand(argv)
+        return cmd(*args)
+
     def getCommand(self,argv):
-        curr = self.getEntry(argv)
-        return curr.fn
+        curr = self.commands
+        for i in range(len(argv)):
+            key = argv[i]
+            if not curr.has_key(key):
+                return (curr.fn,argv[i:])
+            curr = curr[key]
+        return (curr.fn,[])

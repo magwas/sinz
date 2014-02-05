@@ -26,7 +26,7 @@ class DebianTest(ReloadedTestCase):
         
     def test_Other_functions_do_work_in_a_non_debianized_package(self):
         with TestProject("rm -rf debian") as project:
-            helpstring = project.cli.main(["called from test","help","help"])
+            helpstring = project.cli.call(["called from test","help","help"])
             self.assertTrue(re.search("^help :", helpstring, re.MULTILINE))
             self.assertTrue(re.search("^deb :", helpstring, re.MULTILINE))
         
@@ -37,14 +37,14 @@ class DebianTest(ReloadedTestCase):
     def test_deb_getDebEmail_uses_DEBEMAIL_environment_variable(self):
         os.environ["DEBEMAIL"]="Test User <test@example.com>"
         with TestProject() as project:
-            helpstring = project.cli.main(["called from test","deb","getDebEmail"])
+            helpstring = project.cli.call(["called from test","deb","getDebEmail"])
             self.assertEqual(helpstring, "Test User <test@example.com>")
         del os.environ["DEBEMAIL"]
 
     def test_if_no_DEBEMAIL_environment_variable_deb_getDebEmail_uses_the_changelog(self):
         self.assertEquals(None, os.environ.get("DEBEMAIL"))
         with TestProject() as project:
-            helpstring = project.cli.main(["called from test","deb","getDebEmail"])
+            helpstring = project.cli.call(["called from test","deb","getDebEmail"])
             self.assertEqual(helpstring, "Árpád Magosányi <mag@balabit.hu>")
             
     def test_deb_addChangelogEntry_adds_a_changelog_entry(self):
@@ -56,8 +56,8 @@ class DebianTest(ReloadedTestCase):
         if os.environ.get("DEBFULLNAME", False):
             del os.environ["DEBFULLNAME"]
         with TestProject() as project:
-            self.assertEqual("42", project.cli.main(["called from test","travis","getBuildId"]) )
-            cmdline = project.cli.main(["called from test","deb","addChangelogEntry"])
+            self.assertEqual("42", project.cli.call(["called from test","travis","getBuildId"]) )
+            project.cli.call(["called from test","deb","addChangelogEntry"])
             clf = open("debian/changelog")
             changelog = clf.read()
             clf.close()

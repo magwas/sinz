@@ -1,7 +1,6 @@
 from sinz.cli.CLI import CLI
 import git
 from sinz.Util import Util
-import os
 
 @CLI.mixin
 class Git(object):
