@@ -1,10 +1,6 @@
 import unittest
 import os
 from tests.TestProject import TestProject
-import sys
-from StringIO import StringIO
-import re
-from sinz.Util import Util
 
 class DebianTest2(unittest.TestCase):
 

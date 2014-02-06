@@ -4,7 +4,6 @@ import os
 import sinz.cli
 from sinz.plugins.Debian import Debian
 from tests.TestProject import TestProject
-import re
 from tests.ReloadedTestCase import ReloadedTestCase
 
 class DebianTest(ReloadedTestCase):
