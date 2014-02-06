@@ -2,6 +2,7 @@ from sinz.cli.CLI import CLI
 from sinz.PluginInitException import PluginInitException
 from sinz.Util import Util
 import os
+from sinz.plugins.Identity import Identity
 
 class NonDebianPackageError(PluginInitException):
     def __str__(self):
@@ -17,6 +18,10 @@ class Debian(object):
             raise NonDebianPackageError(self)
         if os.environ.has_key("DEBEMAIL"):
             self.changelogEmail = os.environ["DEBEMAIL"]
+        if os.environ.has_key("DEB_REPO_FOR_EACH_BRANCH"):
+            self.repoForEachBranch = True
+        else:
+            self.repoForEachBranch = False
         
     def parseChangeLog(self):
         changelog = open("debian/changelog")
@@ -28,7 +33,21 @@ class Debian(object):
     def getDebEmailFromChangelog(self):
         cmd = """cat debian/changelog |grep "^ -- "|head -1 |sed 's/^ -- //;s/  .*//'"""
         return Util.cmdOutput(cmd)
-    
+   
+    @CLI.climethod
+    def submit(self):
+        cli = CLI()
+        Identity().bring("dput.caf")
+        branch = cli.call(["addChangelogEntry", "getBranch"])
+        if branch == "master" or self.repoForEachBranch:
+            repo = branch
+        else:
+            repo = "nonmaster"
+            
+        pkgname = "%s_%s"%(self.package,self.fullVersion)
+        cmd = "dput -c dput.cf %s ../%s_source.changes"%(repo, pkgname)
+        return Util.runCmd(cmd)
+
     @CLI.climethod
     def getPackage(self):
         return self.package
@@ -68,3 +87,10 @@ class Debian(object):
         self.parseChangeLog()
         return cmdline
     
+    @CLI.climethod
+    def buildAndDput(self):
+        cli = CLI()
+        cli.call(["deb buildAndOutput","deb","addChangelogEntry"])
+        cli.call(["deb buildAndOutput","deb","sourceBuild"])
+        cli.call(["deb buildAndOutput", "gpg", "debSign"])
+        cli.call(["deb buildAndOutput","deb","submit"])
