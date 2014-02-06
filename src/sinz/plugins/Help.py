@@ -9,4 +9,5 @@ class Help(object):
         ret = []
         for (name,func) in Registry().commands.items():
             ret.append("%s : %s"%(name,func))
-        return "\n".join(ret)
+        print("\n".join(ret))
+        raise SystemExit(1)

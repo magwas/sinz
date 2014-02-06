@@ -24,12 +24,6 @@ class DebianTest(ReloadedTestCase):
         a=os.system("./src/sinz.py deb getPackage")
         self.assertEquals(a, 0)
         
-    def test_Other_functions_do_work_in_a_non_debianized_package(self):
-        with TestProject("rm -rf debian") as project:
-            helpstring = project.cli.call(["called from test","help","help"])
-            self.assertTrue(re.search("^help :", helpstring, re.MULTILINE))
-            self.assertTrue(re.search("^deb :", helpstring, re.MULTILINE))
-        
     def test_The_deb_command_do_not_work_in_a_non_debianized_package(self):
         with TestProject("rm -rf debian") as project:
             self.assertExceptionName("NonDebianPackageError",project.cli.runCmd,(["called from test","deb","getPackage"],))

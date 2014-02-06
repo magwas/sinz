@@ -16,9 +16,11 @@ class CLITest(unittest.TestCase):
         self.cli=CLI()
 
     def test_The_help_command_gives_a_help(self):
-        helpstring = self.cli.call(["called from test","help","help"])
-        self.assertTrue(re.search("^help :", helpstring, re.MULTILINE))
-        self.assertTrue(re.search("^deb :", helpstring, re.MULTILINE))
+        oldstdout = sys.stdout
+        sys.stdout = StringIO()
+        self.assertRaises(SystemExit,self.cli.main,["called from test", "help", "help"])
+        self.assertTrue(re.search("^help :", sys.stdout.getvalue(), re.MULTILINE))
+        sys.stdout = oldstdout
         
     def test_Command_can_be_run_through_call(self):
         answer = self.cli.call(["called from test","deb","getPackage"])

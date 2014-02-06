@@ -4,6 +4,7 @@ import sinz.cli
 from sinz.cli.CLI import CLI
 from tests.TestProject import TestProject
 from tests.ReloadedTestCase import ReloadedTestCase
+from sinz.Util import Util
 
 class BasicInfoTest(ReloadedTestCase):
 
@@ -42,6 +43,21 @@ class BasicInfoTest(ReloadedTestCase):
         with TestProject("git checkout -b gitbranch") as project:
             helpstring = project.cli.call(["called from test","getBranch"])
             self.assertEqual(helpstring, "gitbranch")
+
+    def test_getCommit_uses_travis_envvar(self):
+        os.environ["TRAVIS_COMMIT"]="thisisthefakecommitid"
+        os.environ["TRAVIS"]="yes"
+        with TestProject() as project:
+            retstring = project.cli.call(["called from test","getCommit"])
+            self.assertEqual(retstring, "thisisthefakecommitid")
+        del os.environ["TRAVIS_COMMIT"]
+        del os.environ["TRAVIS"]
+
+    def test_getCommit_uses_git_if_no_travis(self):
+        with TestProject("git checkout -b gitbranch") as project:
+            helpstring = project.cli.call(["called from test","getCommit"])
+            commitid = Util.cmdOutput("git log|head -1 |awk '{print $2}'")
+            self.assertEqual(helpstring, commitid)
 
     def test_getBuildId_uses_travis_envvar(self):
         os.environ["TRAVIS_BUILD_NUMBER"]="40"
