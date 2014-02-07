@@ -30,6 +30,19 @@ class BasicInfoTest(ReloadedTestCase):
         with TestProject("rm -rf configure.ac debian") as project:
             self.assertRaises(SystemExit,project.cli.call,(["called from test","getVersion"],))
             
+    def test_getBranch_uses_drone_before_travis_envvar(self):
+        os.environ["DRONE_BRANCH"]="/foo/bar/drone"
+        os.environ["DRONE"]="true"
+        os.environ["TRAVIS_BRANCH"]="/foo/bar/travis"
+        os.environ["TRAVIS"]="true"
+        with TestProject() as project:
+            helpstring = project.cli.call(["called from test","getBranch"])
+            self.assertEqual(helpstring, "drone")
+        del os.environ["TRAVIS_BRANCH"]
+        del os.environ["TRAVIS"]
+        del os.environ["DRONE_BRANCH"]
+        del os.environ["DRONE"]
+
     def test_getBranch_uses_travis_envvar(self):
         os.environ["TRAVIS_BRANCH"]="/foo/bar/travis"
         os.environ["TRAVIS"]="true"
@@ -44,6 +57,19 @@ class BasicInfoTest(ReloadedTestCase):
             helpstring = project.cli.call(["called from test","getBranch"])
             self.assertEqual(helpstring, "gitbranch")
 
+    def test_getCommit_uses_drone_before_travis_envvar(self):
+        os.environ["DRONE_COMMIT"]="/foo/bar/drone"
+        os.environ["DRONE"]="true"
+        os.environ["TRAVIS_COMMIT"]="thisisthefakecommitid"
+        os.environ["TRAVIS"]="true"
+        with TestProject() as project:
+            retstring = project.cli.call(["called from test","getCommit"])
+            self.assertEqual(retstring, "/foo/bar/drone")
+        del os.environ["TRAVIS_COMMIT"]
+        del os.environ["TRAVIS"]
+        del os.environ["DRONE_COMMIT"]
+        del os.environ["DRONE"]
+        
     def test_getCommit_uses_travis_envvar(self):
         os.environ["TRAVIS_COMMIT"]="thisisthefakecommitid"
         os.environ["TRAVIS"]="true"
@@ -59,6 +85,19 @@ class BasicInfoTest(ReloadedTestCase):
             commitid = Util.cmdOutput("git log|head -1 |awk '{print $2}'")
             self.assertEqual(helpstring, commitid)
 
+    def test_getBuildId_uses_drone_before_travis_envvar(self):
+        os.environ["DRONE_BUILD_NUMBER"]="42"
+        os.environ["DRONE"]="true"
+        os.environ["TRAVIS_BUILD_NUMBER"]="40"
+        os.environ["TRAVIS"]="true"
+        with TestProject() as project:
+            helpstring = project.cli.call(["called from test","getBuildId"])
+            self.assertEqual(helpstring, "42")
+        del os.environ["TRAVIS_BUILD_NUMBER"]
+        del os.environ["TRAVIS"]
+        del os.environ["DRONE_BUILD_NUMBER"]
+        del os.environ["DRONE"]
+        
     def test_getBuildId_uses_travis_envvar(self):
         os.environ["TRAVIS_BUILD_NUMBER"]="40"
         os.environ["TRAVIS"]="true"

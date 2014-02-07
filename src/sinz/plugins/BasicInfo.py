@@ -13,18 +13,21 @@ class BasicInfo(object):
     @CLI.climethod
     def getBranch(self):
         return CLI().firstUseable([
+                ["drone", "getBranch"],
                 ["travis", "getBranch"],
                 ["git", "getBranch"],
             ])
     @CLI.climethod
     def getCommit(self):
         return CLI().firstUseable([
+                ["drone", "getCommit"],
                 ["travis", "getCommit"],
                 ["git", "getCommit"],
             ])
     @CLI.climethod
     def getBuildId(self):
         return CLI().firstUseable([
+                ["drone", "getBuildId"],
                 ["travis", "getBuildId"],
             ])
     @CLI.climethod
