@@ -3,6 +3,7 @@ before_install:
 - sudo apt-get install debhelper python dh-autoreconf python-support python-git devscripts
 - set |grep -v pgpassword
 - export PGPKEY=804609ED
+- export DEBEMAIL="Travis Zorp <mag+travis@magwas.rulez.org>"
 script:
 - ./src/sinz.py deb buildAndDput
 env:
