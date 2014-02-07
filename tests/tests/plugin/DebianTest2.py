@@ -7,7 +7,7 @@ class DebianTest2(unittest.TestCase):
     def test_deb_sourceBuild_results_in_dsc_and_targz(self):
         if os.environ.get("skip_long_tests",False):
             self.skipTest("skipping long test")
-        os.environ["TRAVIS"]="yes"
+        os.environ["TRAVIS"]="true"
         os.environ["TRAVIS_BUILD_NUMBER"]="42"
         os.environ["TRAVIS_BRANCH"]="travis-Branch"
         os.environ["TRAVIS_COMMIT"]="ebadadeadbeef"
@@ -28,7 +28,7 @@ class DebianTest2(unittest.TestCase):
     def test_deb_submit_submits_the_package_with_dput_using_provided_dput_dot_cf(self):
         if os.environ.get("skip_long_tests",False):
             self.skipTest("skipping long test")
-        os.environ["TRAVIS"]="yes"
+        os.environ["TRAVIS"]="true"
         os.environ["TRAVIS_BUILD_NUMBER"]="0"
         os.environ["TRAVIS_BRANCH"]="testoutput"
         os.environ["TRAVIS_COMMIT"]="ebadadeadbeef"
@@ -51,7 +51,7 @@ class DebianTest2(unittest.TestCase):
     def test_deb_buildAndDput_builds_and_submits_for_debian_builder(self):
         if os.environ.get("skip_long_tests",False):
             self.skipTest("skipping long test")
-        os.environ["TRAVIS"]="yes"
+        os.environ["TRAVIS"]="true"
         os.environ["TRAVIS_BUILD_NUMBER"]="1"
         os.environ["TRAVIS_BRANCH"]="testoutputbranch"
         os.environ["TRAVIS_COMMIT"]="ebadadeadbeef"

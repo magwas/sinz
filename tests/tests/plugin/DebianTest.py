@@ -41,7 +41,7 @@ class DebianTest(ReloadedTestCase):
             self.assertEqual(helpstring, "Árpád Magosányi <mag@balabit.hu>")
             
     def test_deb_addChangelogEntry_adds_a_changelog_entry(self):
-        os.environ["TRAVIS"]="yes"
+        os.environ["TRAVIS"]="true"
         os.environ["TRAVIS_BUILD_NUMBER"]="42"
         os.environ["TRAVIS_BRANCH"]="travis-Branch"
         os.environ["TRAVIS_COMMIT"]="ebadadeadbeef"

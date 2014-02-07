@@ -7,7 +7,7 @@ import subprocess
 class GitTest2(unittest.TestCase):
 
     def test_sinz_works_in_non_git_tree(self):
-        os.environ["TRAVIS"]="yes"
+        os.environ["TRAVIS"]="true"
         os.environ["TRAVIS_BRANCH"]="travis-Branch"
         os.environ["TRAVIS_COMMIT"]="travis-commit"
         os.environ["TRAVIS_BUILD_NUMBER"]="42"
@@ -26,7 +26,7 @@ class GitTest2(unittest.TestCase):
     def test_sinz_works_in_detached_git_tree(self):
         if os.environ.get("skip_long_tests",False):
             self.skipTest("skipping long test")
-        os.environ["TRAVIS"]="yes"
+        os.environ["TRAVIS"]="true"
         os.environ["TRAVIS_BRANCH"]="travis-Branch"
         os.environ["TRAVIS_COMMIT"]="travis-commit"
         os.environ["TRAVIS_BUILD_NUMBER"]="42"

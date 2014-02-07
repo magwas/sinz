@@ -10,7 +10,7 @@ class NotInTravisBuild(PluginInitException):
 class Travis(object):
     cliName = ["travis"]
     def __init__(self):
-        if not "yes" == os.environ.get("TRAVIS",False):
+        if not "true" == os.environ.get("TRAVIS",False):
             raise NotInTravisBuild(self)
         self.branch = os.environ.get("TRAVIS_BRANCH")
         self.buildNumber = os.environ.get("TRAVIS_BUILD_NUMBER")

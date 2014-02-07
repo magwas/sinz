@@ -16,7 +16,7 @@ class GpgTest(unittest.TestCase):
             self.skipTest("skipping long test")
         os.environ["PGPASSWORD"]="test"
         os.environ["PGPKEY"]="97421C66"
-        os.environ["TRAVIS"]="yes"
+        os.environ["TRAVIS"]="true"
         os.environ["TRAVIS_BUILD_NUMBER"]="42"
         os.environ["TRAVIS_BRANCH"]="travis-Branch"
         os.environ["TRAVIS_COMMIT"]="ebadadeadbeef"

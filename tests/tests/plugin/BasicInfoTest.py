@@ -32,7 +32,7 @@ class BasicInfoTest(ReloadedTestCase):
             
     def test_getBranch_uses_travis_envvar(self):
         os.environ["TRAVIS_BRANCH"]="/foo/bar/travis"
-        os.environ["TRAVIS"]="yes"
+        os.environ["TRAVIS"]="true"
         with TestProject() as project:
             helpstring = project.cli.call(["called from test","getBranch"])
             self.assertEqual(helpstring, "travis")
@@ -46,7 +46,7 @@ class BasicInfoTest(ReloadedTestCase):
 
     def test_getCommit_uses_travis_envvar(self):
         os.environ["TRAVIS_COMMIT"]="thisisthefakecommitid"
-        os.environ["TRAVIS"]="yes"
+        os.environ["TRAVIS"]="true"
         with TestProject() as project:
             retstring = project.cli.call(["called from test","getCommit"])
             self.assertEqual(retstring, "thisisthefakecommitid")
@@ -61,7 +61,7 @@ class BasicInfoTest(ReloadedTestCase):
 
     def test_getBuildId_uses_travis_envvar(self):
         os.environ["TRAVIS_BUILD_NUMBER"]="40"
-        os.environ["TRAVIS"]="yes"
+        os.environ["TRAVIS"]="true"
         with TestProject() as project:
             helpstring = project.cli.call(["called from test","getBuildId"])
             self.assertEqual(helpstring, "40")
