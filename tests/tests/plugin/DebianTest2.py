@@ -1,6 +1,8 @@
 import unittest
 import os
 from tests.TestProject import TestProject
+from sinz.plugins.Debian import Debian
+from sinz.Util import Util
 
 class DebianTest2(unittest.TestCase):
 
@@ -63,6 +65,45 @@ class DebianTest2(unittest.TestCase):
         with TestProject() as project:
             project.cli.call(["called from test","deb","buildAndDput"])
             self.assertTrue(os.path.isfile("../sinz_0.1-1testoutputbranch_source.nonmaster.upload"))
+        del os.environ["TRAVIS"]
+        del os.environ["TRAVIS_BUILD_NUMBER"]
+        del os.environ["TRAVIS_BRANCH"]
+        del os.environ["TRAVIS_COMMIT"]
+
+    def test_deb_buildAndDput_argument_is_distro_if_exists(self):
+        if os.environ.get("skip_long_tests",False):
+            self.skipTest("skipping long test")
+        os.environ["TRAVIS"]="true"
+        os.environ["TRAVIS_BUILD_NUMBER"]="1"
+        os.environ["TRAVIS_BRANCH"]="testoutputbranch"
+        os.environ["TRAVIS_COMMIT"]="ebadadeadbeef"
+        os.environ["DEBEMAIL"]="Sinz Test (This is a test key, do not trust it!) <mag+sinz@magwas.rulez.org>"
+        os.environ["PGPASSWORD"]="test"
+        os.environ["PGPKEY"]="97421C66"
+        if os.environ.get("DEBFULLNAME", False):
+            del os.environ["DEBFULLNAME"]
+        with TestProject() as project:
+            project.cli.call(["called from test","deb","buildAndDput", "distroname"])
+            self.assertTrue(os.path.isfile("../sinz_0.1-1testoutputbranch_source.nonmaster.upload"))
+            self.assertEquals("Distribution: distroname", Util.cmdOutput("cat ../sinz_0.1-1testoutputbranch_source.changes |grep Distribution"))
+        del os.environ["TRAVIS"]
+        del os.environ["TRAVIS_BUILD_NUMBER"]
+        del os.environ["TRAVIS_BRANCH"]
+        del os.environ["TRAVIS_COMMIT"]
+
+    def test_deb_addChangelogEntry_first_argument_is_distro_if_exists(self):
+        if os.environ.get("skip_long_tests",False):
+            self.skipTest("skipping long test")
+        os.environ["TRAVIS"]="true"
+        os.environ["TRAVIS_BUILD_NUMBER"]="42"
+        os.environ["TRAVIS_BRANCH"]="travis-Branch"
+        os.environ["TRAVIS_COMMIT"]="ebadadeadbeef"
+        os.environ["DEBEMAIL"]="Test Builder <builder@example.com>"
+        if os.environ.get("DEBFULLNAME", False):
+            del os.environ["DEBFULLNAME"]
+        with TestProject() as project:
+            project.cli.call(["called from test","deb","addChangelogEntry","thisisthedistro"])
+            self.assertEqual("thisisthedistro", Debian().distro)
         del os.environ["TRAVIS"]
         del os.environ["TRAVIS_BUILD_NUMBER"]
         del os.environ["TRAVIS_BRANCH"]

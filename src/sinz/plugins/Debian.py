@@ -26,9 +26,10 @@ class Debian(object):
     def parseChangeLog(self):
         changelog = open("debian/changelog")
         changelogline = changelog.readline()
-        self.package, fullversion, rest = changelogline.split(" ", 2)  # @UnusedVariable
+        self.package, fullversion, distro, rest = changelogline.split(" ", 3)  # @UnusedVariable
         self.fullVersion = fullversion.replace("(","").replace(")","")
         self.changelogEmail = self.getDebEmailFromChangelog()
+        self.distro = distro.strip()[:-1]
         
     def getDebEmailFromChangelog(self):
         cmd = """cat debian/changelog |grep "^ -- "|head -1 |sed 's/^ -- //;s/  .*//'"""
@@ -70,17 +71,21 @@ class Debian(object):
         return self.changelogEmail
     
     @CLI.climethod
-    def addChangelogEntry(self):
+    def addChangelogEntry(self, *args):
         cli = CLI()
         version = cli.call(["addChangelogEntry", "getVersion"])
         branch = cli.call(["addChangelogEntry", "getBranch"])
+        if(len(args)):
+            distro = args[0] 
+        else:
+            distro = branch
         commitid = cli.call(["addChangelogEntry", "getCommitIdentifier"])
         buildid = cli.call(["addChangelogEntry", "getBuildId"])
         fullversion="%s-%s%s"%(version,buildid,branch)
         cmdline = 'DEBEMAIL="%s" dch -v %s -b -D %s --force-distribution "automated build for commit %s"'%(
                 self.getDebEmail(),
                 fullversion,
-                branch,
+                distro,
                 commitid,
                 )
         Util.runCmd(cmdline)
@@ -88,9 +93,9 @@ class Debian(object):
         return cmdline
     
     @CLI.climethod
-    def buildAndDput(self):
+    def buildAndDput(self, *args):
         cli = CLI()
-        cli.call(["deb buildAndOutput","deb","addChangelogEntry"])
+        cli.call(["deb buildAndOutput","deb","addChangelogEntry"]+list(args))
         cli.call(["deb buildAndOutput","deb","sourceBuild"])
         cli.call(["deb buildAndOutput", "gpg", "debSign"])
         cli.call(["deb buildAndOutput","deb","submit"])

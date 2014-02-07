@@ -5,7 +5,7 @@ before_install:
 - export PGPKEY=804609ED
 - export DEBEMAIL="Travis Zorp <mag+travis@magwas.rulez.org>"
 script:
-- ./src/sinz.py deb buildAndDput
+- ./src/sinz.py deb buildAndDput precise
 env:
   global:
     secure: ozNosfVxt+lO5EWLmwIdKCFhNQFtl6s3l0NDBVoqIFLv9hkL1OZDW/63tfGBBrWGfvO7s0csn2ChWmBMpkUSlU5Gp3MkZOtQ/lsFFBIEI7efHnWQRXsxyHO592It9e5bf0whDKoRZQ3AhgdexHtBXlfE6/CcfSQqhu5QhwTusG8=
