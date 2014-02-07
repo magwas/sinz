@@ -1,5 +1,5 @@
 before_install:
-- sudo apt-get install debhelper python dh-autoreconf python-support python-git
+- sudo apt-get install debhelper python dh-autoreconf python-support python-git devscripts
 - set |grep -v pgpassword
 script:
 - ./src/sinz.py deb buildAndDput
