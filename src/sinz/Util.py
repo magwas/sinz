@@ -11,7 +11,9 @@ class Util(object):
         proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         proc.wait()
         if (0 != proc.returncode):
-            raise CmdRunException((cmd,proc.stderr.read()))
+            if havepassword:
+                cmd = "<command containing password>"
+            raise CmdRunException((cmd,proc.stdout.read(),proc.stderr.read()))
         output = proc.stdout.read().strip()
         return output
 
@@ -22,6 +24,8 @@ class Util(object):
             print(cmd)
         p = subprocess.call(cmd, shell=True)
         if (0 != p):
+            if havepassword:
+                cmd = "<command containing password>"
             raise CmdRunException(cmd)
 
     
