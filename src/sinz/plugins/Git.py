@@ -18,6 +18,9 @@ class Git(object):
     def setUpGitInstance(self):
         try:
             self.repo = git.Repo(".")
+            if isinstance(self.repo.active_branch, str):
+                self.branch = self.repo.active_branch
+                self.commit = self.repo.commits[0].id
             self.branch = self.repo.active_branch.name.split("/")[-1]
             self.commit = self.repo.active_branch.commit.hexsha
         except:
