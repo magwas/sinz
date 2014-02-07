@@ -32,12 +32,6 @@ class BasicInfo(object):
         return "branch %s commit %s"%(self.getBranch(),self.getCommit())
     
     @CLI.climethod
-    def help(self,*args):
-        return CLI().firstUseable([
-                ["help", "help"],
-            ])
-
-    @CLI.climethod
     def getPackage(self):
         return CLI().firstUseable([
                 ["autoconf", "getPackage"],

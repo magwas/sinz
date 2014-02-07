@@ -1,20 +1,37 @@
 from sinz.cli.CLI import CLI
 import git
 from sinz.Util import Util
+from sinz.PluginInitException import PluginInitException
+import traceback
+
+
+class CannotSetUpGit(PluginInitException):
+    def __str__(self):
+        return "We are not in a git repo"
 
 @CLI.mixin
 class Git(object):
     cliName = ["git"]
     def __init__(self):
-        self.repo=git.Repo(".")
+        self.setUpGitInstance()
+
+    def setUpGitInstance(self):
+        try:
+            self.repo = git.Repo(".")
+            self.branch = self.repo.active_branch.name.split("/")[-1]
+            self.commit = self.repo.active_branch.commit.hexsha
+        except:
+            traceback.print_exc()
+            raise(CannotSetUpGit(self))
+
     
     @CLI.climethod
     def getBranch(self):
-        return self.repo.active_branch.name.split("/")[-1]
+        return self.branch
     
     @CLI.climethod
     def getCommit(self):
-        return self.repo.active_branch.commit.hexsha
+        return self.commit
     
     @CLI.climethod
     def getNewTestCases(self):

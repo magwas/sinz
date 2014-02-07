@@ -19,7 +19,7 @@ class CLITest(unittest.TestCase):
         oldstdout = sys.stdout
         sys.stdout = StringIO()
         self.assertRaises(SystemExit,self.cli.main,["called from test", "help", "help"])
-        self.assertTrue(re.search("^help :", sys.stdout.getvalue(), re.MULTILINE))
+        self.assertTrue(re.search("^getCommitIdentifier :", sys.stdout.getvalue(), re.MULTILINE))
         sys.stdout = oldstdout
         
     def test_Command_can_be_run_through_call(self):
@@ -30,12 +30,31 @@ class CLITest(unittest.TestCase):
         oldstdout = sys.stdout
         sys.stdout = StringIO()
         self.assertRaises(SystemExit,self.cli.main,["called from test"])
-        self.assertTrue(re.search("^help :", sys.stdout.getvalue(), re.MULTILINE))
+        self.assertTrue(re.search("^getCommitIdentifier :", sys.stdout.getvalue(), re.MULTILINE))
+        sys.stdout = oldstdout
+        
+    def test_help_gives_help(self):
+        oldstdout = sys.stdout
+        sys.stdout = StringIO()
+        self.assertRaises(SystemExit,self.cli.main,["called from test", "help"])
+        self.assertTrue(re.search("^getCommitIdentifier :", sys.stdout.getvalue(), re.MULTILINE))
+        sys.stdout = oldstdout
+
+    def test_help_help_gives_help(self):
+        oldstdout = sys.stdout
+        sys.stdout = StringIO()
+        self.assertRaises(SystemExit,self.cli.main,["called from test", "help", "help"])
+        self.assertTrue(re.search("^getCommitIdentifier :", sys.stdout.getvalue(), re.MULTILINE))
         sys.stdout = oldstdout
         
     def test_Nonsense_commands_give_help(self):
-        ret = self.cli.call(["called from test", "foo", "bar"])
-        self.assertTrue(re.search("^help", ret, re.MULTILINE))
+        oldstdout = sys.stdout
+        sys.stdout = StringIO()
+        self.assertRaises(SystemExit,self.cli.main,["called from test", "foo", "bar"])
+        ret = sys.stdout.getvalue()
+        sys.stdout = oldstdout
+        print(ret)
+        self.assertTrue(re.search("^getCommitIdentifier :", ret, re.MULTILINE))
         
     def test_with_SINZ_DEBUG_envvar_sinz_prints_commands(self):
         if os.environ.get("skip_long_tests"):

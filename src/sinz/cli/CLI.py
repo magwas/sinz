@@ -43,25 +43,24 @@ class CLI(object):
 
     def call(self,argv):
         if(2 > len(argv)):
-            self.runCmd([argv[0],"help"])
-            raise SystemExit(1)
+            return self.help()
         try:
             return self.runCmd(argv)
         except Exception:
             traceback.print_exc()
-            self.runCmd([argv[0],"help"])
-            raise SystemExit(1)
+            return self.help()
+            
+    def help(self):
+        Registry().commands.listMyself()
 
     def main(self,argv):
         if(2 > len(argv)):
-            print(self.runCmd([argv[0],"help"]))
-            raise SystemExit(1)
+            self.help()
         try:
             print(self.runCmd(argv))
         except Exception:
             traceback.print_exc()
-            print(self.runCmd([argv[0],"help"]))
-            raise SystemExit(1)
+            self.help()
 
     def firstUseable(self,cmds):
         registry = Registry()

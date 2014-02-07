@@ -18,17 +18,17 @@ class Gpg(object):
             raise(CannotSetUpGpg(self))
         Identity().bring(".gpg.key")  # @UndefinedVariable
         Util.runCmd('gpg --import .gpg.key||echo ""')
-    
+
     @CLI.climethod
     def debSign(self):
         pgkname = CLI().call(["debSign", "getPackage"])
         fullversion = CLI().call(["debSign", "deb", "getFullVersion"])
         cmd = 'debsign -p"gpg --batch --passphrase %s" ../%s_%s_source.changes'%(
                         self.pgpassword, pgkname, fullversion)
-        Util.runCmd(cmd)
+        Util.runCmd(cmd, havepassword=True)
 
     @CLI.climethod
     def sign(self,filename):
         cmd = 'gpg --batch --default-key %s -a --passphrase %s --sign %s'%(
                         self.pgpkey, self.pgpassword, filename)
-        Util.runCmd(cmd)
+        Util.runCmd(cmd, havepassword=True)

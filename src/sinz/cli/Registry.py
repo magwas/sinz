@@ -4,7 +4,11 @@ class RegistryRecord(dict):
             fn=self.listMyself
         self.fn = fn
     def listMyself(self,*args):
-        return "\n".join(self.keys())
+        ret = []
+        for (name,func) in self.items():
+            ret.append("%s : %s"%(name,func))
+        print("\n".join(ret))
+        raise SystemExit(1)
         
 class Registry(object):
     __instance = None
