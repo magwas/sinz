@@ -1,0 +1,6 @@
+_sinz()
+{
+    local cur=${COMP_WORDS[COMP_CWORD]}
+    COMPREPLY=( $( sinz complete $COMP_CWORD ${COMP_WORDS[@]} ) )
+}
+complete -o bashdefault -F _sinz sinz

@@ -1,4 +1,6 @@
 from sinz.cli.CLI import CLI
+from sinz.cli.Registry import Registry
+import sys
 
 @CLI.mixin
 class BasicInfo(object):
@@ -40,3 +42,18 @@ class BasicInfo(object):
                 ["autoconf", "getPackage"],
                 ["deb", "getPackage"],
             ])
+    @CLI.climethod
+    def complete(self,*args):
+        argc = int(args[0]) + 1
+        fullwords = args[2:argc]
+        if argc < len(args):
+            fragment = args[-1]
+        else:
+            fragment = ""
+        ret = []
+        entries = Registry().getEntry(fullwords)
+        for entry in entries:
+            if entry.startswith(fragment):
+                ret.append(entry)
+        retval = "\n".join(ret)
+        return retval

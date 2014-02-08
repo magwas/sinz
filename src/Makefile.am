@@ -8,4 +8,6 @@ install-exec-local:
 	mkdir -p $(DESTDIR)$(bindir)
 	cp sinz.py $(DESTDIR)$(bindir)/sinz
 	chmod a+x $(DESTDIR)$(bindir)/sinz
+	mkdir -p $(DESTDIR)$(sysconfdir)/bash_completion.d/
+	cp sinz.completion $(DESTDIR)$(sysconfdir)/bash_completion.d/sinz
 

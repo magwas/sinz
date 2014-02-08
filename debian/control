@@ -8,7 +8,7 @@ Homepage: https://github.com/magwas/sinz
 
 Package: sinz
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, python-support (>= 0.90)
+Depends: ${shlibs:Depends}, ${misc:Depends}, python-support (>= 0.90), python
 Description: Glue Scripts for Continous Integration and builds
  Sinz Is Not ZWA
  Sinz is a set of scripts for continuous integration

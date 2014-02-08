@@ -2,7 +2,6 @@ from sinz.cli.CLI import CLI
 import git
 from sinz.Util import Util
 from sinz.PluginInitException import PluginInitException
-import traceback
 
 
 class CannotSetUpGit(PluginInitException):
@@ -24,7 +23,6 @@ class Git(object):
             self.branch = self.repo.active_branch.name.split("/")[-1]
             self.commit = self.repo.active_branch.commit.hexsha
         except:
-            traceback.print_exc()
             raise(CannotSetUpGit(self))
 
     

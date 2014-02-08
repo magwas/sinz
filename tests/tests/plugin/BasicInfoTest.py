@@ -107,5 +107,13 @@ class BasicInfoTest(ReloadedTestCase):
         del os.environ["TRAVIS_BUILD_NUMBER"]
         del os.environ["TRAVIS"]
 
+    def test_complete_returns_completions_for_incomplete_words(self):
+        completions = CLI().call(["complete test","complete", "2", "sinz", "deb", "get"])
+        self.assertEquals(completions, 'getUpstreamVersion\ngetDebEmail\ngetPackage\ngetFullVersion')
+
+    def test_complete_returns_completions_for_complete_words(self):
+        completions = CLI().call(["complete test","complete", "2", "sinz", "deb"])
+        self.assertEquals(completions, 'getUpstreamVersion\naddChangelogEntry\nsubmit\ngetDebEmail\ngetPackage\ngetFullVersion\nbuildAndDput\nsourceBuild')
+
 if __name__ == "__main__":
     unittest.main()
