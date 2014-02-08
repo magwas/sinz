@@ -10,7 +10,6 @@ class CLI(object):
     def __init__(self):
         self.printcmd = os.environ.get("SINZ_DEBUG")
         PluginManager()
-        Identity()
         if self.printcmd:
             Util.setVerbose()
 

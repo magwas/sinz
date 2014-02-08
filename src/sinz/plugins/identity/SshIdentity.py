@@ -32,4 +32,4 @@ class SshIdentity(object):
         return False
 
     def bring(self,filename):
-        Util.runCmd("sftp %s:%s %s"%(self.identityaccount, filename, filename))
+        Util.runCmd("sftp %s %s:%s %s"%(self.sftp_args, self.identityaccount, filename, filename))

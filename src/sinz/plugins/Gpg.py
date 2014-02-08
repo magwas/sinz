@@ -12,11 +12,12 @@ class CannotSetUpGpg(PluginInitException):
 class Gpg(object):
     cliName=["gpg"]
     def __init__(self):
+        identity = Identity()
         self.pgpassword=os.environ.get("PGPASSWORD")
         self.pgpkey=os.environ.get("PGPKEY")
         if (self.pgpassword is None) or (self.pgpkey is None):
             raise(CannotSetUpGpg(self))
-        Identity().bring(".gpg.key")  # @UndefinedVariable
+        identity.bring(".gpg.key")  # @UndefinedVariable
         Util.runCmd('gpg --import .gpg.key||echo ""')
 
     @CLI.climethod
