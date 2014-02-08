@@ -8,4 +8,4 @@ script:
 - ./src/sinz.py deb buildAndDput precise
 env:
   global:
-    secure: ozNosfVxt+lO5EWLmwIdKCFhNQFtl6s3l0NDBVoqIFLv9hkL1OZDW/63tfGBBrWGfvO7s0csn2ChWmBMpkUSlU5Gp3MkZOtQ/lsFFBIEI7efHnWQRXsxyHO592It9e5bf0whDKoRZQ3AhgdexHtBXlfE6/CcfSQqhu5QhwTusG8=
+    secure: k+Fk1lHV3hV7wgTcoEF5KfySSKqRaGXIoTdN6zC0jArAckB8vj24M4wnSXfzaZqw9zuHwsmddqMlDV02OFKZz99NvuPvN28v1/z0P7K0nIXCaCq5jPRAUagi0tHVunYV9Vus8eDZqOs8cq4sEWghH20MNbrV78e5nSuo6NrkPeg=
