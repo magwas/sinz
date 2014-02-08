@@ -22,6 +22,7 @@ class PluginManager(object):
         return sys.modules[name]
 
     def importModule(self,name,path):
+        #sys.stderr.write("%s\n"%(name,))
         try:
             module = self.getModuleNamed(name)
             return module

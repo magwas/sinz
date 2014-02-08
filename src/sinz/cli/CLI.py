@@ -4,11 +4,13 @@ from sinz.cli.PluginManager import PluginManager
 import traceback
 import os
 from sinz.Util import Util
+from sinz.plugins.Identity import Identity
 
 class CLI(object):
     def __init__(self):
         self.printcmd = os.environ.get("SINZ_DEBUG")
         PluginManager()
+        Identity()
         if self.printcmd:
             Util.setVerbose()
 
