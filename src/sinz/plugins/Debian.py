@@ -38,7 +38,7 @@ class Debian(object):
     @CLI.climethod
     def submit(self):
         cli = CLI()
-        Identity().bring("dput.caf")
+        Identity().bring("dput.cf")
         branch = cli.call(["addChangelogEntry", "getBranch"])
         if branch == "master" or self.repoForEachBranch:
             repo = branch
